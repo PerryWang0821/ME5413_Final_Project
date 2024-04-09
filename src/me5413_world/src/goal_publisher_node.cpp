@@ -7,6 +7,8 @@
 **/
 
 #include "me5413_world/goal_publisher_node.hpp"
+#include <tf2/LinearMath/Quaternion.h> // Include header file for Quaternion
+#include <random>
 
 namespace me5413_world 
 {
@@ -24,11 +26,14 @@ GoalPublisherNode::GoalPublisherNode() : tf2_listener_(tf2_buffer_)
   this->sub_goal_name_ = nh_.subscribe("/rviz_panel/goal_name", 1, &GoalPublisherNode::goalNameCallback, this);
   this->sub_goal_pose_ = nh_.subscribe("/move_base_simple/goal", 1, &GoalPublisherNode::goalPoseCallback, this);
   this->sub_box_markers_ = nh_.subscribe("/gazebo/ground_truth/box_markers", 1, &GoalPublisherNode::boxMarkersCallback, this);
-  
+
+  this->sub_template_match_point_ = nh_.subscribe("/template/match_point", 1, &GoalPublisherNode::templateMatchPointCallback, this);
+
+
   // Initialization
   this->robot_frame_ = "base_link";
   this->map_frame_ = "map";
-  this->world_frame_ = "world";
+  this->world_frame_ = "map";
   this->absolute_position_error_.data = 0.0;
   this->absolute_heading_error_.data = 0.0;
   this->relative_position_error_.data = 0.0;
@@ -88,65 +93,136 @@ void GoalPublisherNode::robotOdomCallback(const nav_msgs::Odometry::ConstPtr& od
   return;
 };
 
+void GoalPublisherNode::templateMatchPointCallback(const geometry_msgs::PoseStamped::ConstPtr& msg)
+{
+    // Display a message when receiving the template match point
+    ROS_INFO("Received template match point message with frame_id: %s", msg->header.frame_id.c_str());
+
+    // Extract position x, y, z
+    double x = msg->pose.position.x;
+    double y = msg->pose.position.y;
+    double z = msg->pose.position.z;
+
+    // Extract orientation quaternion
+    tf2::Quaternion q(
+            msg->pose.orientation.x,
+            msg->pose.orientation.y,
+            msg->pose.orientation.z,
+            msg->pose.orientation.w);
+
+    // Convert to Euler angles
+    tf2::Matrix3x3 m(q);
+    double roll, pitch, yaw;
+    m.getRPY(roll, pitch, yaw);
+
+    // Display (x, y, yaw) in the terminal
+    ROS_INFO("Position: (x: %f, y: %f, z: %f)", x, y, z);
+    ROS_INFO("Orientation in Euler angles: (roll: %f, pitch: %f, yaw: %f)", roll, pitch, yaw);
+
+    // Update internal variables to use the received message
+    this->template_match_point_pose_ = *msg;
+}
+
+
+
 void GoalPublisherNode::goalNameCallback(const std_msgs::String::ConstPtr& name)
-{ 
-  const std::string goal_name = name->data;
-  const int end = goal_name.find_last_of("_");
-  this->goal_type_ = goal_name.substr(1, end-1);
-  const int goal_box_id = stoi(goal_name.substr(end+1, 1));
+{
 
-  geometry_msgs::PoseStamped P_world_goal;
-  if (this->goal_type_ == "box")
-  {
-    if (box_poses_.empty())
-    {
-      ROS_ERROR_STREAM("Box poses unknown, please spawn boxes first!");
-      return;
+    const std::string goal_name = name->data;
+    const int end = goal_name.find_last_of("_");
+    this->goal_type_ = goal_name.substr(1, end-1);
+    const int goal_box_id = stoi(goal_name.substr(end+1));
+
+    ROS_INFO_STREAM("Received goal name: " << name->data);
+    ROS_INFO_STREAM("Goal type: " << this->goal_type_);
+    ROS_INFO_STREAM("Goal box ID: " << goal_box_id);
+
+    geometry_msgs::PoseStamped P_world_goal;
+    // Specific goal location settings for "box" type
+    if (this->goal_type_ == "box") {
+        double yaw_radians; // Variable for storing yaw value in radians
+        switch (goal_box_id) {
+            case 1:
+                P_world_goal.pose.position.x = std::round((static_cast<double>(std::rand()) / RAND_MAX * 8.0 + 8) * 100) / 100.0;
+                P_world_goal.pose.position.y = 1;
+                yaw_radians = -1.57;
+                break;
+            case 2:
+                P_world_goal.pose.position.x = 7.5;
+                P_world_goal.pose.position.y = std::round((-6 + static_cast<double>(std::rand()) / RAND_MAX * 7) * 100) / 100.0;
+                yaw_radians = 0;
+                break;
+            case 3:
+                // x = [8,16],y=[-6,1],yaw=[-3.14,3.14]
+                P_world_goal.pose.position.x = std::round((static_cast<double>(std::rand()) / RAND_MAX * 8.0 + 8) * 100) / 100.0;
+                P_world_goal.pose.position.y = std::round((-6 + static_cast<double>(std::rand()) / RAND_MAX * 7) * 100) / 100.0;
+                yaw_radians = std::round((static_cast<double>(std::rand()) / RAND_MAX * 6.28 - 3.14) * 100) / 100.0;
+                break;
+            case 4:
+                P_world_goal = this->template_match_point_pose_;
+                break;
+            default:
+                ROS_ERROR_STREAM(
+                        "Box id " << goal_box_id << " is outside the available range, please select a valid id!");
+                return;
+        }
+
+        tf2::Quaternion q;
+        q.setRPY(0, 0, yaw_radians); // Set quaternion to given yaw value with roll and pitch set to 0
+        P_world_goal.pose.orientation = tf2::toMsg(q);
+
+        this->pose_world_goal_ = P_world_goal.pose;
+
+        // Attempt coordinate system transformation, and publish if successful
+        geometry_msgs::TransformStamped transform_map_world;
+        geometry_msgs::PoseStamped P_map_goal;
+        try {
+            transform_map_world = this->tf2_buffer_.lookupTransform(this->map_frame_, this->world_frame_,
+                                                                    ros::Time(0));
+            tf2::doTransform(P_world_goal, P_map_goal, transform_map_world);
+            P_map_goal.header.stamp = ros::Time::now();
+            P_map_goal.header.frame_id = this->map_frame_;
+            this->pub_goal_.publish(P_map_goal);  // Ensure publishing logic also executes for "box" type
+        }
+        catch (tf2::TransformException &ex) {
+            ROS_WARN("Failed to transform goal pose to map frame: %s", ex.what());
+        }
     }
-    else if (goal_box_id >= box_poses_.size())
+
+    else
     {
-      ROS_ERROR_STREAM("Box id is outside the available range, please select a smaller id!");
-      return;
+        // Handle non-"box" type goals according to original logic
+        P_world_goal = getGoalPoseFromConfig(goal_name);
     }
-    
-    P_world_goal = box_poses_[goal_box_id - 1];
-  }
-  else
-  {
-    // Get the Pose of the goal in world frame
-    P_world_goal = getGoalPoseFromConfig(goal_name);
-  }
 
-  this->pose_world_goal_ = P_world_goal.pose;
-  // Get the Transform from world to map from the tf_listener
-  geometry_msgs::TransformStamped transform_map_world;
-  try
-  {
-    transform_map_world = this->tf2_buffer_.lookupTransform(this->map_frame_, this->world_frame_, ros::Time(0));
-  }
-  catch (tf2::TransformException& ex)
-  {
-    ROS_WARN("%s", ex.what());
-    return;
-  }
+    this->pose_world_goal_ = P_world_goal.pose;
 
-  // Transform the goal pose to map frame
-  geometry_msgs::PoseStamped P_map_goal;
-  tf2::doTransform(P_world_goal, P_map_goal, transform_map_world);
-  P_map_goal.header.stamp = ros::Time::now();
-  P_map_goal.header.frame_id = map_frame_;
+    geometry_msgs::TransformStamped transform_map_world;
+    try
+    {
+        transform_map_world = this->tf2_buffer_.lookupTransform(this->map_frame_, this->world_frame_, ros::Time(0));
+    }
+    catch (tf2::TransformException& ex)
+    {
+        ROS_WARN("%s", ex.what());
+        return;
+    }
 
-  // Transform the robot pose to map frame
-  tf2::doTransform(this->pose_world_robot_, this->pose_map_robot_, transform_map_world);
+    // Transform the goal pose to map frame
+    geometry_msgs::PoseStamped P_map_goal;
+    tf2::doTransform(P_world_goal, P_map_goal, transform_map_world);
+    P_map_goal.header.stamp = ros::Time::now();
+    P_map_goal.header.frame_id = this->map_frame_;
 
-  // Publish goal pose in map frame 
-  if (this->goal_type_ != "box")
-  {
-    this->pub_goal_.publish(P_map_goal);
-  }
+    // Transform the robot pose to map frame
+    tf2::doTransform(this->pose_world_robot_, this->pose_map_robot_, transform_map_world);
 
-  return;
+    if (this->goal_type_ != "box")
+    {
+        this->pub_goal_.publish(P_map_goal);
+    }
 };
+
 
 void GoalPublisherNode::goalPoseCallback(const geometry_msgs::PoseStamped::ConstPtr& goal_pose)
 {

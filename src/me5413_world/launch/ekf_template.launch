@@ -1,0 +1,11 @@
+<launch>
+  <!-- <arg name="base_link_frame_id" value="base_link"/>
+  <arg name="imu0" default="true"/> -->
+  <arg name="use_map_topic" default="false"/>
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
+    <rosparam command="load" file="$(find me5413_world)/launch/ekf_template.yaml" />
+    <param name="use_map_topic" value="$(arg use_map_topic)"/>
+
+  </node>
+</launch>

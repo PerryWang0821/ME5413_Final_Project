@@ -1,6 +1,6 @@
 me5413_world:
   # the frame of all the poses below
-  frame_id: 'world'
+  frame_id: 'map'
 
   # robot starting point
   start:
@@ -10,12 +10,12 @@ me5413_world:
 
   # assembly line poses
   assembly_line_1:
-    x: 4.0
-    y: -1.7
+    x: 3.8
+    y: -1.3
     yaw: -1.57
   assembly_line_2:
-    x: 4.0
-    y: -4.7
+    x: 3.8
+    y: -4.3
     yaw: -1.57
 
   # packing area poses
@@ -38,8 +38,8 @@ me5413_world:
 
   # delivery vehicle poses
   vehicle_1:
-    x: 15.5
-    y: -8.2
+    x: 15.2
+    y: -7.9
     yaw: -1.57
   vehicle_2:
     x: 2.9

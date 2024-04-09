@@ -275,7 +275,7 @@
   <xacro:include filename="$(find pointgrey_camera_description)/urdf/pointgrey_flea3.urdf.xacro" />
 
   <!-- If enabled, generate the flea3 camera payload with a tilt of 30 degrees. -->
-  <xacro:if value="$(optenv JACKAL_FLEA3 1)">
+  <xacro:if value="$(optenv JACKAL_FLEA3 0)">
     <xacro:property name="name" value="$(optenv JACKAL_FLEA3_NAME front)" />
     <xacro:property name="tilt" value="$(optenv JACKAL_FLEA3_TILT 0.)" />
     <xacro:property name="tower" value="$(optenv JACKAL_FLEA3_TOWER 1)" />
@@ -367,7 +367,7 @@
 
   <!-- If enabled, generate the bumblebee2 camera payload with a tilt of 0 degrees. -->
   <!-- Disabled temporarily due to metapackage issue. -->
-  <xacro:if value="$(optenv JACKAL_BB2 0)">
+  <xacro:if value="$(optenv JACKAL_BB2 1)">
     <xacro:property name="tilt" value="$(optenv JACKAL_BB2_TILT 0)" />
     <xacro:property name="name" value="$(optenv JACKAL_BB2_NAME front)" />
     <xacro:property name="tower" value="$(optenv JACKAL_BB2_TOWER 1)"/>

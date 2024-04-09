@@ -61,6 +61,8 @@
   <depend>jackal_navigation</depend>
   <depend>teleop_twist_keyboard</depend>
   <depend>velodyne_simulator</depend>
+  <build_depend>vision_msgs</build_depend>
+  <exec_depend>vision_msgs</exec_depend>
   
   <!-- The export tag contains other, unspecified, tags -->
   <export>

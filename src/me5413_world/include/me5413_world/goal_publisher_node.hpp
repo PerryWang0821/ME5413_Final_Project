@@ -66,6 +66,11 @@ class GoalPublisherNode
   ros::Subscriber sub_goal_pose_;
   ros::Subscriber sub_box_markers_;
 
+    // 新的订阅者成员变量
+    ros::Subscriber sub_template_match_point_;
+    // 新的回调函数
+    void templateMatchPointCallback(const geometry_msgs::PoseStamped::ConstPtr& msg);
+
   tf2_ros::Buffer tf2_buffer_;
   tf2_ros::TransformListener tf2_listener_;
   tf2_ros::TransformBroadcaster tf2_bcaster_;
@@ -75,6 +80,10 @@ class GoalPublisherNode
   std::string map_frame_;
   std::string robot_frame_;
   std::string goal_type_;
+
+
+    // 存储从/template/match_point接收的值
+    geometry_msgs::PoseStamped template_match_point_pose_;
 
   geometry_msgs::Pose pose_world_robot_;
   geometry_msgs::Pose pose_world_goal_;
