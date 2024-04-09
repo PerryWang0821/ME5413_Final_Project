@@ -201,6 +201,8 @@ In the second terminal:
 source devel/setup.bash
 roslaunch me5413_world navigation.launch
 ```
+The following is navigation process screenshot.
+![rviz_navigation_image](src/me5413_world/media/navigation_image.png)
 
 The [following](https://drive.google.com/file/d/1yQTIeOIBRUvtPHbAWRN1jEknpp3O0auR/view?usp=drive_link) is our navigation video.
 
