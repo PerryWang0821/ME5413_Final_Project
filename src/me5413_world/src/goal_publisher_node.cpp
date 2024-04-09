@@ -143,13 +143,13 @@ void GoalPublisherNode::goalNameCallback(const std_msgs::String::ConstPtr& name)
         double yaw_radians; // Variable for storing yaw value in radians
         switch (goal_box_id) {
             case 1:
-                P_world_goal.pose.position.x = std::round((static_cast<double>(std::rand()) / RAND_MAX * 8.0 + 8) * 100) / 100.0;
+                P_world_goal.pose.position.x = std::round((static_cast<double>(std::rand()) / RAND_MAX * 9 + 7.5) * 100) / 100.0;
                 P_world_goal.pose.position.y = 1;
                 yaw_radians = -1.57;
                 break;
             case 2:
                 P_world_goal.pose.position.x = 7.5;
-                P_world_goal.pose.position.y = std::round((-6 + static_cast<double>(std::rand()) / RAND_MAX * 7) * 100) / 100.0;
+                P_world_goal.pose.position.y = std::round((-6.5 + static_cast<double>(std::rand()) / RAND_MAX * 8) * 100) / 100.0;
                 yaw_radians = 0;
                 break;
             case 3:
