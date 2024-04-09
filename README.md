@@ -1,7 +1,7 @@
 # ME5413_Final_Project
 
 NUS ME5413 Autonomous Mobile Robotics Final Project
-> Authors: [Jiang Qi](https://github.com/QIAND123456789), [Lu Zixuan], [Wang Pengyu], [Shen Xuanru], [Wei Ruijie](https://github.com/Maxwell-00) and [Ye Zhengtao](https://github.com/LeeeYuYu) (Sorting is based on alphabetical order only)
+> Authors: [Jiang Qi](https://github.com/QIAND123456789), Lu Zixuan, [Wang Pengyu](https://github.com/PerryWang0821), Shen Xuanru, [Wei Ruijie](https://github.com/Maxwell-00) and [Ye Zhengtao](https://github.com/LeeeYuYu) (Sorting is based on alphabetical order only)
 
 ![Ubuntu 20.04](https://img.shields.io/badge/OS-Ubuntu_20.04-informational?style=flat&logo=ubuntu&logoColor=white&color=2bbc8a)
 ![ROS Noetic](https://img.shields.io/badge/Tools-ROS_Noetic-informational?style=flat&logo=ROS&logoColor=white&color=2bbc8a)
@@ -201,6 +201,10 @@ In the second terminal:
 source devel/setup.bash
 roslaunch me5413_world navigation.launch
 ```
+The following is navigation process screenshot.
+![rviz_navigation_image](src/me5413_world/media/navigation_image.png)
+
+[This](https://drive.google.com/file/d/1NlzpGew4bkYA11NfSnH3tgOnjH-e8V-m/view?usp=drive_link) is our navigation video.
 
 ## Contribution
 
