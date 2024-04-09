@@ -202,7 +202,7 @@ source devel/setup.bash
 roslaunch me5413_world navigation.launch
 ```
 
-The [following](https://drive.google.com/file/d/1yQTIeOIBRUvtPHbAWRN1jEknpp3O0auR/view?usp=drive_link) is our navigation video
+The [following](https://drive.google.com/file/d/1yQTIeOIBRUvtPHbAWRN1jEknpp3O0auR/view?usp=drive_link) is our navigation video.
 
 ## Contribution
 
