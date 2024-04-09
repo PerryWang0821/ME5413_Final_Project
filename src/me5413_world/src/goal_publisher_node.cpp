@@ -156,7 +156,7 @@ void GoalPublisherNode::goalNameCallback(const std_msgs::String::ConstPtr& name)
                 // x = [8,16],y=[-6,1],yaw=[-3.14,3.14]
                 P_world_goal.pose.position.x = std::round((static_cast<double>(std::rand()) / RAND_MAX * 8.0 + 8) * 100) / 100.0;
                 P_world_goal.pose.position.y = std::round((-6 + static_cast<double>(std::rand()) / RAND_MAX * 7) * 100) / 100.0;
-                yaw_radians = std::round((static_cast<double>(std::rand()) / RAND_MAX * 6.28 - 3.14) * 100) / 100.0;
+                yaw_radians = -1.57;
                 break;
             case 4:
                 P_world_goal = this->template_match_point_pose_;
