@@ -204,7 +204,7 @@ roslaunch me5413_world navigation.launch
 The following is navigation process screenshot.
 ![rviz_navigation_image](src/me5413_world/media/navigation_image.png)
 
-[This](https://drive.google.com/file/d/1yQTIeOIBRUvtPHbAWRN1jEknpp3O0auR/view?usp=drive_link) is our navigation video.
+[This](https://drive.google.com/file/d/1mJkMla_Y0TaK4YvCvhNgJztOYmsJo3o0/view?usp=drive_link) is our navigation video.
 
 ## Contribution
 
