@@ -34,7 +34,7 @@ class ImprovedTemplateMatcher:
             rospy.logerr("Failed to load template image from {}".format(template_path))
             rospy.signal_shutdown("Failed to load template")
 
-        self.scales = [0.2,0.3,0.4,0.5,0.6,0.75, 1.0, 1.25, 1.5]  # Scales for template matching
+        self.scales = [0.3,0.4,0.5,0.6,0.75, 1.0, 1.25, 1.5]  # Scales for template matching
         
         self.camera_info = None
         self.T = 0.12  # Baseline distance, adjust according to your setup
@@ -122,7 +122,7 @@ class ImprovedTemplateMatcher:
                     pose_stamped_map = self.transform_pose_to_map_frame(pose_stamped, "front_camera_optical", "map")
                     if pose_stamped_map and not self.has_published:
                         self.match_pub.publish(pose_stamped_map)
-                        self.has_published = True  # 发布消息后设置标志位为True               
+                        # self.has_published = True  # 发布消息后设置标志位为True               
                     else:
                      rospy.loginfo("No match found.")
 
