@@ -10,6 +10,7 @@ from geometry_msgs.msg import PoseStamped
 from stereo_msgs.msg import DisparityImage
 from tf.transformations import quaternion_matrix
 
+
 class ImprovedTemplateMatcher:
     def __init__(self):
         self.node_name = "template_matcher"
