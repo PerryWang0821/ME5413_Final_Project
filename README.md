@@ -1,7 +1,7 @@
 # ME5413_Final_Project
 
 NUS ME5413 Autonomous Mobile Robotics Final Project
-> Authors: [Jiang Qi](https://github.com/QIAND123456789), Lu Zixuan, [Wang Pengyu](https://github.com/PerryWang0821), Shen Xuanru, [Wei Ruijie](https://github.com/Maxwell-00) and [Ye Zhengtao](https://github.com/LeeeYuYu) (Sorting is based on alphabetical order only)
+> Authors: [Jiang Qi](https://github.com/QIAND123456789), [Lu Zixuan](https://github.com/Pandarlu), [Wang Pengyu](https://github.com/PerryWang0821), Shen Xuanru, [Wei Ruijie](https://github.com/Maxwell-00) and [Ye Zhengtao](https://github.com/LeeeYuYu) (Sorting is based on alphabetical order only)
 
 ![Ubuntu 20.04](https://img.shields.io/badge/OS-Ubuntu_20.04-informational?style=flat&logo=ubuntu&logoColor=white&color=2bbc8a)
 ![ROS Noetic](https://img.shields.io/badge/Tools-ROS_Noetic-informational?style=flat&logo=ROS&logoColor=white&color=2bbc8a)
